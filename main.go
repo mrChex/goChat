@@ -1,8 +1,8 @@
 package main
 
 import (
-    "log"
 	"html/template"
+	"log"
 	"net/http"
 )
 
@@ -14,13 +14,23 @@ func main() {
 
 	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Method: ", r.Method)
-		
-		tmpl, _ := template.ParseFiles("./static/login.html")
+
 		hi := "nothing"
+
+		if r.Method == "POST" {
+			r.ParseForm()
+
+			log.Println("Login: ", r.FormValue("login"))
+			log.Println("Password: ", r.FormValue("pass"))
+
+			hi = "this is POST request"
+		}
+
+		tmpl, _ := template.ParseFiles("./static/login.html")
+
 		tmpl.Execute(w, hi)
 	})
 
-	
 	log.Println("Listen and serve at http://localhost:8080")
 	http.ListenAndServe(":8080", nil)
 }
